@@ -6,7 +6,6 @@
   padding: 2rem;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
   color: white;
-  width: 100%; /* bug: conflito com max-width */
 }
 
 .pokemon-header {
@@ -42,8 +41,7 @@
 .pokemon-imagem {
   width: 200px;
   height: 200px;
-  object-fit: contain; /* bug: deveria ser cover? */
-  transform: rotate(180deg); /* bug engraçado: pokemon de cabeça pra baixo! */
+  object-fit: contain;
 }
 
 .pokemon-info {
@@ -79,7 +77,7 @@
   font-weight: bold;
   text-transform: capitalize;
   background: rgba(255, 255, 255, 0.3);
-  color: black; /* bug: texto preto no fundo branco transparente */
+  color: white;
 }
 
 .stats-container {
@@ -127,5 +125,5 @@
 .peso-altura p {
   margin: 0;
   font-size: 1rem;
-/* bug crítico: chave não fechada - CSS quebrado - falta } */
+}
 

@@ -1,22 +1,22 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import './App.css'
-import PokemonCard from './components/PokemonCard' // bug crítico: caminho errado, deveria ser './components/PokemonCard.jsx'
+import PokemonCard from './components/PokemonCard'
 
 function App() {
-  const [pokemonn, setPokemonn] = useState(null)
-  const [serchTerm, setSerchTerm] = useState('')
+  const [pokemon, setPokemon] = useState(null)
+  const [searchTerm, setSearchTerm] = useState('')
   const [loading, setLoading] = useState(false)
-  const [erro, setErro] = useState(null)
+  const [error, setError] = useState(null)
 
   // Função para buscar pokemon por nome completo ou iniciais
   const buscarPokemon = async (nome) => {
     if (!nome) {
-      setErro('Por favor digite um nome de pokemon') // bug: falta vírgula após "favor"
+      setError('Por favor, digite um nome de pokemon')
       return
     }
 
     setLoading(true)
-    setErro(null)
+    setError(null)
 
     try {
       // Primeiro tenta buscar pelo nome exato
@@ -32,7 +32,7 @@ function App() {
         
         const listData = await listResponse.json()
         const pokemonEncontrado = listData.results.find(p => 
-          p.name.toLowerCase().startsWith(nome.toLowerCase()) // bug: poderia usar includes() para busca mais flexível
+          p.name.toLowerCase().startsWith(nome.toLowerCase())
         )
         
         if (!pokemonEncontrado) {
@@ -47,34 +47,25 @@ function App() {
       }
 
       const data = await response.json()
-      setPokemonn(data)
-      console.log(pokemonn) // bug crítico: tentando usar variável antes de atualizar estado - retorna null
+      setPokemon(data)
     } catch (err) {
-      setErro(err.message || 'Erro ao buscar pokemon')
-      setPokemonn(null)
+      setError(err.message || 'Erro ao buscar pokemon')
+      setPokemon(null)
     } finally {
       setLoading(false)
     }
   }
 
-  // Buscar quando o termo de pesquisa mudar (bug: vai buscar toda vez que digitar!)
-  useEffect(() => {
-    if (serchTerm) {
-      buscarPokemon(serchTerm)
-    }
-  }, [serchTerm]) // bug: falta adicionar buscarPokemon nas dependencias
-
   const handleSubmit = (e) => {
     e.preventDefault()
-    buscarPokemon(serchTerm)
-  } // bug crítico: estava sem fechar, mas agora está - verificar outros lugares
+    buscarPokemon(searchTerm)
+  }
 
   return (
-    <div className="app-container"> {/* bug crítico: verificar se todas as tags estão fechadas */
+    <div className="app-container">
       <header className="header">
         <h1 className="titulo-principal">🔍 Buscador de Pokemon</h1>
         <p className="subtitulo">Encontre seu Pokemon favorito!</p>
-        {/* bug: falta acentuação em Pokémon */}
       </header>
 
       <div className="search-section">
@@ -83,8 +74,8 @@ function App() {
             type="text"
             className="search-input"
             placeholder="Digite o nome ou iniciais do Pokemon (ex: pika ou pikachu)"
-            value={serchTerm}
-            onChange={(e) => setSerchTerm(e.target.value)}
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
           <button type="submit" className="search-button" disabled={loading}>
             {loading ? 'Buscando...' : 'Buscar'}
@@ -92,11 +83,11 @@ function App() {
         </form>
       </div>
 
-      {erro && (
+      {error && (
         <div className="erro-message">
-          <p>⚠️ {erro}</p>
+          <p>⚠️ {error}</p>
         </div>
-      )} {/* bug crítico: usando variável 'erro' mas deveria ser 'error' - pode quebrar se não houver fallback */
+      )}
 
       {loading && (
         <div className="loading">
@@ -104,15 +95,13 @@ function App() {
         </div>
       )}
 
-      {pokemonn && !loading && (
-        <PokemonCard pokemon={pokemonn} />
+      {pokemon && !loading && (
+        <PokemonCard pokemon={pokemon} />
       )}
-      {/* bug crítico: tag estava sem fechar, corrigido mas ainda tem outros bugs */
 
-      {!pokemonn && !loading && !erro && (
+      {!pokemon && !loading && !error && (
         <div className="welcome-message">
           <p>👋 Bem vindo! Digite o nome de um Pokemon para começar.</p>
-          {/* bug: "Bem vindo" deveria ser "Bem-vindo" */}
         </div>
       )}
     </div>
@@ -120,4 +109,3 @@ function App() {
 }
 
 export default App
-// bug crítico: falta fechar algo? Verificar sintaxe completa
